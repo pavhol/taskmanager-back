@@ -1,12 +1,15 @@
 package main
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"github.com/yourusername/taskmanager-back/database"
-	"github.com/yourusername/taskmanager-back/models"
-	"github.com/yourusername/taskmanager-back/routes"
+	"github.com/pavhol/taskmanager-back/database"
+	"github.com/pavhol/taskmanager-back/models"
+	"github.com/pavhol/taskmanager-back/routes"
 )
 
 func main() {
@@ -26,8 +29,15 @@ func main() {
 	)
 
 	r := gin.Default()
-	// включим CORS по необходимости
-	// r.Use(cors.Default())
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	// инициализируем маршруты
 	routes.Setup(r)
